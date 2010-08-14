@@ -1,0 +1,48 @@
+<languageVersion : 1.0;>
+
+kernel CalculateUVs
+<   namespace : "derschmale.com";
+    vendor : "Der Schmale";
+    version : 1;
+    description : "Trilinear interpolation over the vertex normal field to extract uv coordinates for env maps";
+>
+{
+    input image3 vertices;
+    input image3 grid;
+    input image3 cornerNormals;
+    output pixel3 dst;
+    
+    parameter float3 size;
+    parameter float3 ratio;
+    parameter float3 cornerRes;
+
+    void evaluatePixel()
+    {
+        float3 v = sampleNearest(vertices, outCoord());
+        v = (v+size*.5)*ratio;
+        
+        float3 v0 = floor(v);
+        float3 v1 = v0 + 1.0;
+        float3 fr = v-v0;
+        float v0z = v0.z * cornerRes.y;
+        float v1z = v1.z * cornerRes.y;
+        float comp = 1.0 - fr.z;
+        
+        float3 i0 = sampleNearest(cornerNormals, float2(v0.x, v0.y + v0z))*comp + 
+                    sampleNearest(cornerNormals, float2(v0.x, v0.y + v1z))*fr.z;
+        float3 i1 = sampleNearest(cornerNormals, float2(v0.x, v1.y + v0z))*comp + 
+                    sampleNearest(cornerNormals, float2(v0.x, v1.y + v1z))*fr.z;
+        float3 j0 = sampleNearest(cornerNormals, float2(v1.x, v0.y + v0z))*comp + 
+                    sampleNearest(cornerNormals, float2(v1.x, v0.y + v1z))*fr.z;
+        float3 j1 = sampleNearest(cornerNormals, float2(v1.x, v1.y + v0z))*comp + 
+                    sampleNearest(cornerNormals, float2(v1.x, v1.y + v1z))*fr.z;
+                    
+        comp = 1.0 - fr.y;
+        float3 w0 = i0*comp + i1*fr.y;
+        float3 w1 = j0*comp + j1*fr.y;
+        dst = (w0*(1.0-fr.x) + w1*fr.x);
+        dst /= length(dst);
+        dst = dst*.5 + .5;
+        
+    }
+}
