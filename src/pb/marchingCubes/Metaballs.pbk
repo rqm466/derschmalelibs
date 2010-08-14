@@ -1,0 +1,37 @@
+<languageVersion : 1.0;>
+
+kernel Metaballs
+<   namespace : "derschmale.com";
+    vendor : "Der Schmale";
+    version : 1;
+    description : "A cube marcher for metaballs. No goo variables for speed.";
+>
+{
+    input image3 grid;
+    output pixel3 dst;
+
+    parameter float3 position1 < defaultValue: float3(0.0); >;
+    parameter float3 position2 < defaultValue: float3(0.0); >;
+    parameter float3 position3 < defaultValue: float3(0.0); >;
+    parameter float3 position4 < defaultValue: float3(0.0); >;
+    parameter float3 position5 < defaultValue: float3(0.0); >;
+    parameter float3 size1 < defaultValue: float3(20.0); >;
+    parameter float2 size2 < defaultValue: float2(20.0); >;
+
+    void evaluatePixel()
+    {
+        float3 pos = sampleNearest(grid, outCoord());
+        float3 d1 = position1 - pos;
+        float3 d2 = position2 - pos;
+        float3 d3 = position3 - pos;
+        float3 d4 = position4 - pos;
+        float3 d5 = position5 - pos;
+        float sumDist = size1.x/(d1.x*d1.x + d1.y*d1.y + d1.z*d1.z) +
+                        size1.y/(d2.x*d2.x + d2.y*d2.y + d2.z*d2.z) +
+                        size1.z/(d3.x*d3.x + d3.y*d3.y + d3.z*d3.z) + 
+                        size2.x/(d4.x*d4.x + d4.y*d4.y + d4.z*d4.z) + 
+                        size2.y/(d5.x*d5.x + d5.y*d5.y + d5.z*d5.z);
+    
+        dst = float3(sumDist);
+    }
+}

@@ -1,0 +1,39 @@
+<languageVersion : 1.0;>
+
+kernel GridNormals
+<   namespace : "derschmale.com";
+    vendor : "Der Schmale";
+    version : 1;
+    description : "Calculates normals for every corner in the grid";
+>
+{
+    input image3 insides;
+    input image3 grid;
+    output pixel3 dst;
+
+    parameter float3 gridRes < defaultValue: float3(30.0); >;
+        
+    void evaluatePixel()
+    {
+        float2 i = outCoord();
+        float3 coord3d;
+        coord3d.x = i.x;
+        coord3d.z = floor(i.y/gridRes.y);
+        coord3d.y = i.y - coord3d.z*gridRes.y;
+        
+        float2 l = float2(coord3d.x - 1.0,  i.y);
+        float2 r = float2(coord3d.x + 1.0,  i.y);
+        float2 t = float2(coord3d.x,        i.y - 1.0);
+        float2 b = float2(coord3d.x,        i.y + 1.0);
+        float2 n = float2(coord3d.x,        coord3d.y + (coord3d.z - 1.0)*gridRes.y);
+        float2 f = float2(coord3d.x,        coord3d.y + (coord3d.z + 1.0)*gridRes.y);
+        
+        //float c = sampleNearest(insides, i).x;
+        //float o = sampleNearest(insides, i).x;
+        
+        // to do: check if dx = 1 can be used - will save some samples
+        dst.x = (sampleNearest(insides, r).x - sampleNearest(insides, l).x);
+        dst.y = (sampleNearest(insides, b).x - sampleNearest(insides, t).x);
+        dst.z = (sampleNearest(insides, f).x - sampleNearest(insides, n).x);
+    }
+}

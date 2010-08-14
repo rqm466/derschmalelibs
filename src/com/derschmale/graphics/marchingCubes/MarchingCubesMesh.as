@@ -35,13 +35,13 @@ package com.derschmale.graphics.marchingCubes
 		private var _marcher : CubeMarcher;
 		private var _cornersYZ : Number;
 
-		[Embed(source="/pb/MarchingCubePatterns.pbj", mimeType="application/octet-stream")]
+		[Embed(source="/pb/marchingCubes/MarchingCubePatterns.pbj", mimeType="application/octet-stream")]
 		private var PatternKernel : Class;
 
-		[Embed(source="/pb/GridNormals.pbj", mimeType="application/octet-stream")]
+		[Embed(source="/pb/marchingCubes/GridNormals.pbj", mimeType="application/octet-stream")]
 		private var NormalKernel : Class;
 
-		[Embed(source="/pb/CalculateUVs.pbj", mimeType="application/octet-stream")]
+		[Embed(source="/pb/marchingCubes/CalculateUVs.pbj", mimeType="application/octet-stream")]
 		private var UVKernel : Class;
 
 		private var _patternShader : Shader;

@@ -1,0 +1,45 @@
+<languageVersion : 1.0;>
+
+kernel MarchingCubePatterns
+<   namespace : "derschmale.com";
+    vendor : "Der Schmale";
+    version : 1;
+    description : "Matches grid values and applies the values to form MC case ids";
+>
+{
+    input image3 cornerStates;
+    output pixel3 dst;
+
+    parameter float isoValue < defaultValue: 0.5; >;
+    parameter float3 gridRes < defaultValue: float3(30.0); >;
+    parameter float3 cornerRes < defaultValue: float3(33.0); >;
+    
+    void evaluatePixel()
+    {
+        float2 i = outCoord();
+        
+        float y, z;
+        z = floor(i.y/gridRes.y);
+        y = i.y - z*gridRes.y;
+        float r = i.x + 1.0;
+        float t = y + 1.0;
+        float f = z + 1.0;
+        float2 tln = float2(i.x,  t + z * cornerRes.y);
+        float2 trn = float2(r,    t + z * cornerRes.y);
+        float2 tlf = float2(i.x,  t + f * cornerRes.y);
+        float2 trf = float2(r,    t + f * cornerRes.y);
+        float2 bln = float2(i.x,  y + z * cornerRes.y);
+        float2 brn = float2(r,    y + z * cornerRes.y);
+        float2 blf = float2(i.x,  y + f * cornerRes.y);
+        float2 brf = float2(r,    y + f * cornerRes.y);
+        
+        dst.x = (sampleNearest(cornerStates, tln).x < isoValue ? 1.0 : 0.0) +
+                (sampleNearest(cornerStates, trn).x < isoValue ? 2.0 : 0.0) +
+                (sampleNearest(cornerStates, tlf).x < isoValue ? 4.0 : 0.0) +
+                (sampleNearest(cornerStates, trf).x < isoValue ? 8.0 : 0.0) +
+                (sampleNearest(cornerStates, bln).x < isoValue ? 16.0 : 0.0) +
+                (sampleNearest(cornerStates, brn).x < isoValue ? 32.0 : 0.0) +
+                (sampleNearest(cornerStates, blf).x < isoValue ? 64.0 : 0.0) +
+                (sampleNearest(cornerStates, brf).x < isoValue ? 128.0 : 0.0);
+    }
+}

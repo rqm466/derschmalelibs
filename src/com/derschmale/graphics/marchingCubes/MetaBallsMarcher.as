@@ -8,7 +8,7 @@ package com.derschmale.graphics.marchingCubes
 	 */
 	public class MetaBallsMarcher extends CubeMarcher
 	{
-		[Embed(source="/pb/Metaballs.pbj", mimeType="application/octet-stream")]
+		[Embed(source="/pb/marchingCubes/Metaballs.pbj", mimeType="application/octet-stream")]
 		private var Kernel : Class;
 
 		private var _pos1 : Vector3D;
