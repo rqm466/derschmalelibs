@@ -1,0 +1,63 @@
+<languageVersion : 1.0;>
+
+kernel ProjectionMapper
+<   namespace : "derschmale.com";
+    vendor : "Der Schmale";
+    version : 1;
+    description : "Performs projective texture mapping on a BitmapData";
+>
+{
+    input image3 texture;
+    input image4 positionMap;
+    input image3 normalMap;
+    input image3 projective;
+    output pixel3 dst;
+
+    parameter float3 ambient    <   minValue: float3(0.0);
+                                    maxValue: float3(1.0);
+                                    defaultValue: float3(0.0);
+                                    description: "The ambient light hitting the surface";
+                                >;
+                                
+    parameter float2 halfMapSize    <   minValue: float2(0.0);
+                                        maxValue: float2(2048.0);
+                                        defaultValue: float2(512.0);
+                                        description: "The dimensions of the projection map";
+                                    >;
+    
+    parameter float3 lightPos    <  defaultValue: float3(0.0);
+                                    description: "The position of the light relative to the object";
+                                >;
+                                
+    parameter float incandescence < minValue: 0.0;
+                                    defaultValue: 5.0;
+                                    description: "Indicates how much luminance the light has (1.0 is just a light 'filter')";
+                                >;
+    parameter float4x4 projectionMatrix;
+    parameter float3x3 normalMatrix;
+    
+    
+    void evaluatePixel()
+    {
+        float2 coord = outCoord();
+                
+        // project the point on the surface on the light texture
+        float4 pos = sampleNearest(positionMap, coord);
+        float4 proj = projectionMatrix*pos;
+        proj.xy /= proj.w;
+        proj.xy += float2(1.0);
+        proj.xy *= halfMapSize;
+        
+        // add lambert diffuse shading
+        float3 normal = normalize(sampleNearest(normalMap, coord) - .5);
+        float lightStrength = clamp(dot(normal, normalize(lightPos - pos.xyz)), 0.0, 1.0);
+        
+        // if the point is on the negative side of the texture, it should NOT be lit
+        lightStrength = proj.z > 0.0? lightStrength : 0.0;
+        
+        // blend
+        float3 textureColor = sampleNearest(texture, coord);
+        float3 lightColor = clamp(ambient + sampleLinear(projective, proj.xy)*lightStrength*incandescence, 0.0, 1.0);
+        dst = textureColor*lightColor;
+    }
+}
