@@ -17,11 +17,9 @@ package com.derschmale.away3dlite.projectionMapping
 	public class BitmapProjector extends Object3D
 	{
 		private var _bitmap : BitmapData;
-		private var _renderBitmap : BitmapData;
 
-		private var _focalLength : Number = 1;
-		private var _aspectRatio : Number;
-		private var _origin : Point;
+		protected var _focalLength : Number = 1;
+		protected var _aspectRatio : Number;
 
 		private var _projectionMatrix : Matrix3D;
 		private var _viewProjectionMatrix : Matrix3D;
@@ -40,9 +38,7 @@ package com.derschmale.away3dlite.projectionMapping
 			_viewProjectionMatrix = new Matrix3D();
 
 			_bitmap = bitmap;
-			_renderBitmap = _bitmap.clone();
 			_aspectRatio = bitmap.width/bitmap.height;
-			_origin = new Point();
 
 			focalLength = 1;
 		}
@@ -81,7 +77,7 @@ package com.derschmale.away3dlite.projectionMapping
 		 */
 		public function get bitmap() : BitmapData
 		{
-			return _renderBitmap;
+			return _bitmap;
 		}
 
 		/**
