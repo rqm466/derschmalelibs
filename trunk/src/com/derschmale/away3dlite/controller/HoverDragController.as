@@ -1,4 +1,4 @@
-package com.derschmale.away3dlite.projectionMapping
+package com.derschmale.away3dlite.controller
 {
 	import away3dlite.cameras.Camera3D;
 

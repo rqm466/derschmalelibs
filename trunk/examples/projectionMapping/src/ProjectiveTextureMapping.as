@@ -12,7 +12,7 @@ package
 
 	import com.derschmale.away3dlite.projectionMapping.BitmapProjector;
 
-	import com.derschmale.away3dlite.projectionMapping.HoverDragController;
+	import com.derschmale.away3dlite.controller.HoverDragController;
 	import com.derschmale.away3dlite.projectionMapping.ProjectiveTextureMaterial;
 
 	import flash.display.Sprite;
@@ -23,7 +23,8 @@ package
 	import flash.geom.Vector3D;
 
 	/**
-	 * A demo to illustrate how Away3D Lite can be hacked to achieve more interesting shading effects, such as projective texture mapping.
+	 * A demo to illustrate how Away3D Lite can be hacked to achieve more interesting shading effects, such as fake shadow mapping.
+	 * This demo builds upon the ProjectiveTextureMapping demo to create shadows for convex objects.
 	 *
 	 * @author David Lenaerts
 	 *
@@ -85,7 +86,7 @@ package
 			addChild(_view);
 
 			_projector = new BitmapProjector(Assets.LIGHT_TEXTURE);
-			_projector.focalLength = 1/Math.atan(60*Math.PI/180);	// vertical fov of 60°
+			_projector.focalLength = 1/Math.atan(60*Math.PI/180);	// vertical fov of 60ï¿½
 
 			_camController = new HoverDragController(_view.camera, stage);
 
