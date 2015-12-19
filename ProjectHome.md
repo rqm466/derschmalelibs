@@ -1,0 +1,1 @@
+All kinds of code I decide to share that do not belong to any specific project. Usually part of blog posts at www.derschmale.com
